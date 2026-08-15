@@ -37,3 +37,4 @@ function refresh(){due.textContent=items().length}
 function exportData(){let b=new Blob([JSON.stringify({docs:get(D),terms:get(T)},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='refine-note-backup.json';a.click()}
 migrate();renderDocs();renderTerms();refresh();
 </script></body></html>
+<！-- deploy -->
