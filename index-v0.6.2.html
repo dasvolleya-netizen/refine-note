@@ -1,0 +1,39 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f2e9"><link rel="manifest" href="./manifest.webmanifest"><title>Refine Note</title>
+<style>:root{--b:#f6f2e9;--c:#fffdf8;--i:#26343a;--m:#758087;--l:#e3ddd1;--a:#79a99d}*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--i);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}main{max-width:760px;margin:auto;padding:22px 16px 110px}h1{font:700 31px Georgia,serif;margin:4px 0}.muted{color:var(--m)}.page{display:none}.active{display:block}.card{background:var(--c);border:1px solid var(--l);border-radius:22px;padding:18px;margin:14px 0}.hero{background:linear-gradient(135deg,#e9f3ef,#fffdf8)}.big{font-size:34px;font-weight:800}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{border:0;border-radius:14px;padding:13px 15px;background:var(--a);color:white;font-weight:700}button.alt{background:#edf0ec;color:var(--i)}input,textarea,select{width:100%;padding:12px;border:1px solid var(--l);border-radius:12px;background:white;font:inherit;margin:6px 0 12px}textarea{min-height:85px}.item{padding:14px 0;border-bottom:1px solid var(--l)}.tag{display:inline-block;background:#deebe7;border-radius:999px;padding:4px 8px;margin:3px;font-size:12px}nav{position:fixed;bottom:0;left:0;right:0;background:#fffdf8ee;border-top:1px solid var(--l)}nav div{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)}nav button{background:transparent;color:var(--m);font-size:11px;padding:10px 2px}</style></head><body><main>
+<h1>Refine Note</h1><div class="muted">学んだことを、忘れっぱなしにしない。 v0.6.2</div>
+<section id="home" class="page active"><div class="card hero"><div class="muted">今日の復習</div><div class="big"><span id="due">0</span> 件</div><p class="muted">ノルマなし。できる分だけ進める。</p><button onclick="startReview()">復習を始める</button></div><div class="grid"><button class="card alt" onclick="go('add')">＋ 資料を追加</button><button class="card alt" onclick="go('library')">▤ 資料庫</button><button class="card alt" onclick="go('terms')">ABC 用語集</button></div></section>
+<section id="add" class="page"><h2>資料を追加</h2><div class="card">タイトル<input id="title">大分類<select id="category"><option>水処理</option><option>電気</option><option>機械</option><option>化学</option><option>言葉・文章</option><option>その他</option></select>タグ<input id="tags">メモ<textarea id="memo"></textarea><button onclick="saveDoc()">保存</button></div></section>
+<section id="library" class="page"><h2>資料庫</h2><input id="search" placeholder="検索" oninput="renderDocs()"><div id="docs" class="card"></div></section>
+<section id="detail" class="page"><h2>資料詳細</h2><div id="detailCard" class="card"></div></section>
+<section id="terms" class="page"><h2>用語集</h2><div class="card">用語・略語<input id="term">正式名称<input id="full">意味・補足<textarea id="termnote"></textarea><button onclick="saveTerm()">追加</button></div><div id="termList" class="card"></div></section>
+<section id="review" class="page"><h2>復習</h2><div id="reviewCard" class="card"></div></section>
+<section id="scorePage" class="page"><h2>理解度</h2><div class="card">
+<p class="muted">今回の理解度を0〜100%で記録。</p>
+<input id="scoreInput" type="number" min="0" max="100" inputmode="numeric" value="70">
+<textarea id="weakness" placeholder="あやふやだった点（任意）"></textarea>
+<button onclick="saveReviewScore()">記録する</button> <button class="alt" onclick="go('home')">今日は終了</button>
+</div></section>
+<section id="continuePage" class="page"><h2>復習</h2><div class="card">
+<h2>記録したよ</h2><p id="nextDateText"></p>
+<button id="continueBtn" onclick="continueReview()">次もやる</button> <button class="alt" onclick="go('home')">今日はここまで</button>
+</div></section>
+<section id="settings" class="page"><h2>設定</h2><div class="card">Refine Note v0.6.2<p class="muted">データはブラウザ内保存。</p><button onclick="exportData()">バックアップ</button></div></section>
+</main><nav><div><button onclick="go('home')">⌂<br>ホーム</button><button onclick="go('library')">▤<br>資料庫</button><button onclick="go('add')">＋<br>追加</button><button onclick="go('terms')">ABC<br>用語集</button><button onclick="go('settings')">⚙<br>設定</button></div></nav>
+<script>
+const D='rn_docs',T='rn_terms';let q=[],n=0;
+const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),uid=()=>Date.now()+Math.random();
+function migrate(){let a=get(D),c=false;a.forEach(x=>{if(!x.id){x.id=uid();c=true}});if(c)set(D,a)}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');if(p==='library')renderDocs();if(p==='terms')renderTerms();refresh();scrollTo(0,0)}
+function saveDoc(){if(!title.value.trim())return alert('タイトルを入力');let a=get(D);a.unshift({id:uid(),title:title.value,category:category.value,tags:tags.value.split(',').filter(Boolean),memo:memo.value});set(D,a);title.value=tags.value=memo.value='';go('library')}
+function renderDocs(){let s=(search.value||'').toLowerCase(),a=get(D).filter(x=>(x.title+' '+x.category+' '+(x.tags||[]).join(' ')+' '+(x.memo||'')).toLowerCase().includes(s));docs.innerHTML=a.length?a.map(x=>`<div class="item" onclick="openDoc('${x.id}')"><b>${x.title}</b><br><span class="tag">${x.category}</span><p>${x.memo||''}</p><small class="muted">タップで詳細 ›</small></div>`).join(''):'まだ資料がありません'}
+function openDoc(i){let x=get(D).find(v=>String(v.id)===String(i));if(!x)return;detailCard.innerHTML=`<h2>${x.title}</h2><span class="tag">${x.category}</span><p>${x.memo||'メモなし'}</p><button onclick="reviewOne('${x.id}')">この資料を復習</button> <button class="alt" onclick="go('library')">戻る</button>`;go('detail')}
+function saveTerm(){if(!term.value.trim())return;let a=get(T);a.unshift({id:uid(),name:term.value,full:full.value,note:termnote.value});set(T,a);term.value=full.value=termnote.value='';renderTerms();refresh()}
+function renderTerms(){let a=get(T);termList.innerHTML=a.length?a.map(x=>`<div class="item"><b>${x.name}</b><div>${x.full||''}</div><p>${x.note||''}</p></div>`).join(''):'まだ用語がありません'}
+function items(){return [...get(D).map(x=>({id:x.id,label:x.title})),...get(T).map(x=>({id:x.id,label:x.name}))]}
+function startReview(){q=items();n=0;showReview()}
+function reviewOne(i){let x=get(D).find(v=>String(v.id)===String(i));q=x?[{id:x.id,label:x.title}]:[];n=0;showReview()}
+function showReview(){if(!q.length){reviewCard.innerHTML='<p>まず資料か用語を登録しよう。</p>';go('review');return}if(n>=q.length){reviewCard.innerHTML='<h2>今日の復習は完了！</h2><button onclick="go(\'home\')">ホームへ</button>';go('review');return}let x=q[n];reviewCard.innerHTML=`<div class="muted">${n+1} / ${q.length}</div><h2>${x.label}</h2><p>自分の言葉で説明してみよう。</p><button onclick="n++;showReview()">次を見る</button> <button class="alt" onclick="go('home')">終了</button>`;go('review')}
+function refresh(){due.textContent=items().length}
+function exportData(){let b=new Blob([JSON.stringify({docs:get(D),terms:get(T)},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='refine-note-backup.json';a.click()}
+migrate();renderDocs();renderTerms();refresh();
+</script></body></html>
