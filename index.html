@@ -78,7 +78,7 @@ function renderTerms(){let a=get(T);termList.innerHTML=a.length?a.map(x=>`<div c
 function nextReview(){let a=[...get(D).map(x=>x.title),...get(T).map(x=>x.name)];if(!a.length){reviewText.textContent='まず資料か用語を登録しよう。';return}if(ri>=a.length){reviewText.textContent='今日の復習は完了！';ri=0;return}reviewText.textContent=`「${a[ri++]}」について、自分の言葉で説明してみよう。`}
 function refresh(){due.textContent=get(D).length+get(T).length}
 function exportData(){let o={docs:get(D),terms:get(T),exported:new Date().toISOString()},b=new Blob([JSON.stringify(o,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='refine-note-backup.json';a.click()}
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
+if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').then(r=>r.update());}
 renderDocs();renderTerms();refresh();
 </script>
 </body></html>
