@@ -5,5 +5,13 @@
   "scope": "./",
   "display": "standalone",
   "background_color": "#f6f2e9",
-  "theme_color": "#f6f2e9"
+  "theme_color": "#f6f2e9",
+"icons": [
+  {
+    "src": "./9930A5ED-3E9F-4A97-88B0-ED798CFC815E.png",
+    "sizes": "1024x1024",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }
+]
 }
