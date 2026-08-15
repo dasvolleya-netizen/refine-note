@@ -1,90 +1,39 @@
-<!doctype html><html lang="ja"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f6f2e9"><link rel="manifest" href="./manifest.webmanifest">
-<title>Refine Note</title>
-<style>
-:root{--bg:#f6f2e9;--card:#fffdf8;--ink:#26343a;--muted:#758087;--line:#e3ddd1;--accent:#79a99d;--soft:#deebe7;--danger:#b96f68}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}
-main{max-width:760px;margin:auto;padding:22px 16px 112px}h1{font:700 31px Georgia,serif;margin:4px 0}.muted{color:var(--muted)}.tiny{font-size:12px}
-.page{display:none}.page.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin:14px 0}.hero{background:linear-gradient(135deg,#e9f3ef,#fffdf8)}
-.big{font-size:34px;font-weight:800}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}
-button,.filebtn{border:0;border-radius:14px;padding:13px 15px;background:var(--accent);color:white;font:700 15px inherit;display:inline-block;text-align:center}button.alt,.filebtn.alt{background:#edf0ec;color:var(--ink)}button.danger{background:var(--danger)}
-input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white;font:inherit;margin:6px 0 12px}textarea{min-height:85px}
-.item{padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.tag{display:inline-block;background:var(--soft);border-radius:999px;padding:4px 8px;margin:3px;font-size:12px}
-.score{font-size:42px;font-weight:800}.progress{height:10px;background:#ece8df;border-radius:99px;overflow:hidden}.progress>div{height:100%;background:var(--accent)}
-.notice{padding:12px;border-radius:14px;background:#eef5f2}.hidden{display:none}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fffdf8ee;border-top:1px solid var(--line);backdrop-filter:blur(10px);z-index:10}nav div{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)}nav button{background:transparent;color:var(--muted);font-size:11px;padding:10px 2px}
-</style></head><body><main>
-<h1>Refine Note</h1><div class="muted">学んだことを、忘れっぱなしにしない。 <span class="tiny">v0.6</span></div>
-
-<section id="home" class="page active">
-<div class="card hero"><div class="muted">今日の復習</div><div class="big"><span id="due">0</span> 件</div><p id="dueSub" class="muted">今日が復習日のものだけ表示します。</p><button onclick="startReview()">復習を始める</button></div>
-<div class="grid"><button class="card alt" onclick="newDoc()">＋ 資料を追加</button><button class="card alt" onclick="go('library')">▤ 資料庫</button><button class="card alt" onclick="newTerm()">ABC 用語集</button></div>
-</section>
-
-<section id="add" class="page"><h2 id="docFormTitle">資料を追加</h2><div class="card">
-タイトル<input id="title">大分類<select id="category"><option>水処理</option><option>電気</option><option>機械</option><option>化学</option><option>言葉・文章</option><option>その他</option></select>
-タグ<input id="tags" placeholder="例：ポンプ, 薬注">メモ<textarea id="memo"></textarea>
-<div class="row"><button onclick="saveDoc()">保存</button><button class="alt" onclick="go('library')">キャンセル</button></div></div></section>
-
-<section id="library" class="page"><h2>資料庫</h2><input id="search" placeholder="タイトル・分類・タグ・メモを検索" oninput="renderDocs()"><div id="docs" class="card"></div></section>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f6f2e9"><link rel="manifest" href="./manifest.webmanifest"><title>Refine Note</title>
+<style>:root{--b:#f6f2e9;--c:#fffdf8;--i:#26343a;--m:#758087;--l:#e3ddd1;--a:#79a99d}*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--i);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}main{max-width:760px;margin:auto;padding:22px 16px 110px}h1{font:700 31px Georgia,serif;margin:4px 0}.muted{color:var(--m)}.page{display:none}.active{display:block}.card{background:var(--c);border:1px solid var(--l);border-radius:22px;padding:18px;margin:14px 0}.hero{background:linear-gradient(135deg,#e9f3ef,#fffdf8)}.big{font-size:34px;font-weight:800}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{border:0;border-radius:14px;padding:13px 15px;background:var(--a);color:white;font-weight:700}button.alt{background:#edf0ec;color:var(--i)}input,textarea,select{width:100%;padding:12px;border:1px solid var(--l);border-radius:12px;background:white;font:inherit;margin:6px 0 12px}textarea{min-height:85px}.item{padding:14px 0;border-bottom:1px solid var(--l)}.tag{display:inline-block;background:#deebe7;border-radius:999px;padding:4px 8px;margin:3px;font-size:12px}nav{position:fixed;bottom:0;left:0;right:0;background:#fffdf8ee;border-top:1px solid var(--l)}nav div{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)}nav button{background:transparent;color:var(--m);font-size:11px;padding:10px 2px}</style></head><body><main>
+<h1>Refine Note</h1><div class="muted">学んだことを、忘れっぱなしにしない。 v0.4</div>
+<section id="home" class="page active"><div class="card hero"><div class="muted">今日の復習</div><div class="big"><span id="due">0</span> 件</div><p class="muted">ノルマなし。できる分だけ進める。</p><button onclick="startReview()">復習を始める</button></div><div class="grid"><button class="card alt" onclick="go('add')">＋ 資料を追加</button><button class="card alt" onclick="go('library')">▤ 資料庫</button><button class="card alt" onclick="go('terms')">ABC 用語集</button></div></section>
+<section id="add" class="page"><h2>資料を追加</h2><div class="card">タイトル<input id="title">大分類<select id="category"><option>水処理</option><option>電気</option><option>機械</option><option>化学</option><option>言葉・文章</option><option>その他</option></select>タグ<input id="tags">メモ<textarea id="memo"></textarea><button onclick="saveDoc()">保存</button></div></section>
+<section id="library" class="page"><h2>資料庫</h2><input id="search" placeholder="検索" oninput="renderDocs()"><div id="docs" class="card"></div></section>
 <section id="detail" class="page"><h2>資料詳細</h2><div id="detailCard" class="card"></div></section>
-
-<section id="terms" class="page"><h2>用語集</h2><div class="card"><h3 id="termFormTitle">用語を追加</h3>
-用語・略語<input id="term">正式名称<input id="full">意味・補足<textarea id="termnote"></textarea>
-<div class="row"><button onclick="saveTerm()">保存</button><button class="alt" onclick="clearTermForm()">入力をクリア</button></div></div>
-<input id="termSearch" placeholder="用語を検索" oninput="renderTerms()"><div id="termList" class="card"></div></section>
-
+<section id="terms" class="page"><h2>用語集</h2><div class="card">用語・略語<input id="term">正式名称<input id="full">意味・補足<textarea id="termnote"></textarea><button onclick="saveTerm()">追加</button></div><div id="termList" class="card"></div></section>
 <section id="review" class="page"><h2>復習</h2><div id="reviewCard" class="card"></div></section>
-
 <section id="scorePage" class="page"><h2>理解度</h2><div class="card">
-<div class="notice tiny">0〜100%で自己評価。点数に応じて次回の復習日を自動調整します。</div>
-<div class="score"><span id="scoreValue">70</span>%</div><input id="scoreInput" type="range" min="0" max="100" value="70" oninput="scoreValue.textContent=this.value">
-<p id="scoreHint" class="muted"></p>
-<label>今回あやふやだった点（任意）</label><textarea id="weakness" placeholder="例：なぜpHで効き方が変わるか説明できなかった"></textarea>
-<div class="row"><button onclick="saveScore()">記録する</button><button class="alt" onclick="go('home')">今日は終了</button></div></div></section>
-
-<section id="continuePage" class="page"><h2>復習</h2><div class="card"><h2>記録したよ</h2><p id="nextDateText"></p><p id="remainText" class="muted"></p><div class="row"><button id="continueBtn" onclick="continueReview()">次もやる</button><button class="alt" onclick="go('home')">今日はここまで</button></div></div></section>
-
-<section id="settings" class="page"><h2>設定</h2><div class="card"><b>Refine Note v0.6</b><p class="muted">データはこのブラウザ内に保存。復習日は理解度から自動計算します。</p>
-<button onclick="exportData()">バックアップを書き出す</button><label class="filebtn alt">バックアップを復元<input class="hidden" type="file" accept=".json,application/json" onchange="importData(event)"></label></div></section>
-</main>
-
-<nav><div><button onclick="go('home')">⌂<br>ホーム</button><button onclick="go('library')">▤<br>資料庫</button><button onclick="newDoc()">＋<br>追加</button><button onclick="go('terms')">ABC<br>用語集</button><button onclick="go('settings')">⚙<br>設定</button></div></nav>
-
+<p class="muted">今回の理解度を0〜100%で記録。</p>
+<input id="scoreInput" type="number" min="0" max="100" inputmode="numeric" value="70">
+<textarea id="weakness" placeholder="あやふやだった点（任意）"></textarea>
+<button onclick="saveReviewScore()">記録する</button> <button class="alt" onclick="go('home')">今日は終了</button>
+</div></section>
+<section id="continuePage" class="page"><h2>復習</h2><div class="card">
+<h2>記録したよ</h2><p id="nextDateText"></p>
+<button id="continueBtn" onclick="continueReview()">次もやる</button> <button class="alt" onclick="go('home')">今日はここまで</button>
+</div></section>
+<section id="settings" class="page"><h2>設定</h2><div class="card">Refine Note v0.6.1<p class="muted">データはブラウザ内保存。</p><button onclick="exportData()">バックアップ</button></div></section>
+</main><nav><div><button onclick="go('home')">⌂<br>ホーム</button><button onclick="go('library')">▤<br>資料庫</button><button onclick="go('add')">＋<br>追加</button><button onclick="go('terms')">ABC<br>用語集</button><button onclick="go('settings')">⚙<br>設定</button></div></nav>
 <script>
-const D='rn_docs',T='rn_terms';let queue=[],qi=0,current=null,editingDocId=null,editingTermId=null;
-const $=x=>document.getElementById(x),get=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const today=()=>{let d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())},isoDay=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-function addDays(base,n){let d=new Date(base);d.setDate(d.getDate()+n);return d}
-function interval(score,reps){if(score<40)return 1;if(score<60)return reps>=2?2:1;if(score<75)return [1,3,7,14,30][Math.min(reps,4)];if(score<90)return [2,5,10,21,45][Math.min(reps,4)];return [3,7,14,30,60,120][Math.min(reps,5)]}
-function migrate(){for(const k of [D,T]){let a=get(k),c=false;a.forEach(x=>{if(!x.id){x.id=uid();c=true}if(!x.review){x.review={due:isoDay(today()),reps:0,lastScore:null,history:[]};c=true}});if(c)set(k,a)}}
-function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(p).classList.add('active');if(p==='library')renderDocs();if(p==='terms')renderTerms();refresh();scrollTo(0,0)}
-function newDoc(){editingDocId=null;$('docFormTitle').textContent='資料を追加';$('title').value='';$('category').value='水処理';$('tags').value='';$('memo').value='';go('add')}
-function saveDoc(){let t=$('title').value.trim();if(!t)return alert('タイトルを入力してください');let a=get(D),old=editingDocId?a.find(x=>x.id===editingDocId):null,obj={id:editingDocId||uid(),title:t,category:$('category').value,tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean),memo:$('memo').value.trim(),review:old?.review||{due:isoDay(today()),reps:0,lastScore:null,history:[]}};if(editingDocId){let i=a.findIndex(x=>x.id===editingDocId);a[i]=obj}else a.unshift(obj);set(D,a);editingDocId=null;go('library')}
-function renderDocs(){let s=($('search').value||'').toLowerCase(),a=get(D).filter(x=>(x.title+' '+x.category+' '+(x.tags||[]).join(' ')+' '+(x.memo||'')).toLowerCase().includes(s));$('docs').innerHTML=a.length?a.map(x=>`<div class="item" onclick="openDoc('${x.id}')"><div class="row between"><b>${esc(x.title)}</b><small class="muted">詳細 ›</small></div><span class="tag">${esc(x.category)}</span>${(x.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}<p>${esc(x.memo||'')}</p><small class="muted">理解度 ${x.review?.lastScore??'未'}% ・ 次回 ${esc(x.review?.due||'今日')}</small></div>`).join(''):'まだ資料がありません'}
-function openDoc(i){let x=get(D).find(v=>v.id===i);if(!x)return;$('detailCard').innerHTML=`<h2>${esc(x.title)}</h2><span class="tag">${esc(x.category)}</span><p>${esc(x.memo||'メモなし').replace(/\n/g,'<br>')}</p><p class="muted">理解度：${x.review.lastScore??'未評価'}${x.review.lastScore===null?'':'%'}<br>次回復習：${esc(x.review.due)}</p><div class="row"><button onclick="reviewOne('${x.id}')">この資料を復習</button><button class="alt" onclick="editDoc('${x.id}')">編集</button><button class="danger" onclick="deleteDoc('${x.id}')">削除</button></div>`;go('detail')}
-function editDoc(i){let x=get(D).find(v=>v.id===i);editingDocId=x.id;$('docFormTitle').textContent='資料を編集';$('title').value=x.title;$('category').value=x.category;$('tags').value=(x.tags||[]).join(', ');$('memo').value=x.memo||'';go('add')}
-function deleteDoc(i){if(confirm('削除しますか？')){set(D,get(D).filter(x=>x.id!==i));go('library')}}
-function newTerm(){clearTermForm();go('terms')}
-function clearTermForm(){editingTermId=null;$('termFormTitle').textContent='用語を追加';$('term').value=$('full').value=$('termnote').value=''}
-function saveTerm(){let name=$('term').value.trim();if(!name)return alert('用語を入力してください');let a=get(T),old=editingTermId?a.find(x=>x.id===editingTermId):null,obj={id:editingTermId||uid(),name,full:$('full').value.trim(),note:$('termnote').value.trim(),review:old?.review||{due:isoDay(today()),reps:0,lastScore:null,history:[]}};if(editingTermId){let i=a.findIndex(x=>x.id===editingTermId);a[i]=obj}else a.unshift(obj);set(T,a);clearTermForm();renderTerms();refresh()}
-function renderTerms(){let s=($('termSearch').value||'').toLowerCase(),a=get(T).filter(x=>(x.name+' '+(x.full||'')+' '+(x.note||'')).toLowerCase().includes(s));$('termList').innerHTML=a.length?a.map(x=>`<div class="item"><b>${esc(x.name)}</b><div>${esc(x.full||'')}</div><p>${esc(x.note||'')}</p><small class="muted">理解度 ${x.review?.lastScore??'未'}% ・ 次回 ${esc(x.review?.due||'今日')}</small><div class="row"><button class="alt" onclick="editTerm('${x.id}')">編集</button><button class="danger" onclick="deleteTerm('${x.id}')">削除</button></div></div>`).join(''):'まだ用語がありません'}
-function editTerm(i){let x=get(T).find(v=>v.id===i);editingTermId=x.id;$('termFormTitle').textContent='用語を編集';$('term').value=x.name;$('full').value=x.full||'';$('termnote').value=x.note||'';scrollTo(0,0)}
-function deleteTerm(i){if(confirm('削除しますか？')){set(T,get(T).filter(x=>x.id!==i));renderTerms();refresh()}}
-function all(){return [...get(D).map(x=>({...x,kind:'doc',label:x.title})),...get(T).map(x=>({...x,kind:'term',label:x.name}))]}
-function dueItems(){let t=isoDay(today());return all().filter(x=>(x.review?.due||t)<=t)}
-function startReview(){queue=dueItems();qi=0;showReview()}
-function reviewOne(i){let x=get(D).find(v=>v.id===i);queue=x?[{...x,kind:'doc',label:x.title}]:[];qi=0;showReview()}
-function showReview(){if(!queue.length||qi>=queue.length){$('reviewCard').innerHTML='<h2>今日の復習は完了！</h2><button onclick="go(\\'home\\')">ホームへ</button>';go('review');return}current=queue[qi];$('reviewCard').innerHTML=`<div class="muted">${qi+1} / ${queue.length}</div><h2>${esc(current.label)}</h2><p>自分の言葉で説明してみよう。</p><div class="row"><button onclick="openScore()">説明した・評価へ</button><button class="alt" onclick="go('home')">今日は終了</button></div>`;go('review')}
-function openScore(){$('scoreInput').value=70;$('scoreValue').textContent='70';$('weakness').value='';updateHint();go('scorePage')}
-$('scoreInput').addEventListener('input',updateHint);
-function updateHint(){let s=Number($('scoreInput').value),r=current?.review?.reps||0,d=interval(s,r);$('scoreHint').textContent=`この点数なら、次回は約${d}日後。`}
-function saveScore(){let s=Number($('scoreInput').value),key=current.kind==='doc'?D:T,a=get(key),i=a.findIndex(x=>x.id===current.id);if(i<0)return;let r=a[i].review||{reps:0,history:[]},days=interval(s,r.reps||0),next=isoDay(addDays(today(),days));r.lastScore=s;r.reps=(r.reps||0)+1;r.due=next;r.history=r.history||[];r.history.push({date:isoDay(today()),score:s,weakness:$('weakness').value.trim(),next});a[i].review=r;set(key,a);$('nextDateText').textContent=`次回の目安：${next}（${days}日後）`;let remain=queue.length-qi-1;$('remainText').textContent=remain?`今日の残り：${remain}件`:'今日の予定分はこれで最後。';$('continueBtn').style.display=remain?'inline-block':'none';qi++;refresh();go('continuePage')}
-function continueReview(){showReview()}
-function refresh(){let n=dueItems().length;$('due').textContent=n;$('dueSub').textContent=n?'今日が復習日のものだけ表示しています。':'今日は予定された復習はありません。'}
-function exportData(){let o={version:'0.6',docs:get(D),terms:get(T),exported:new Date().toISOString()},b=new Blob([JSON.stringify(o,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='refine-note-backup.json';a.click()}
-function importData(e){let f=e.target.files[0];if(!f)return,r=new FileReader();r.onload=()=>{try{let o=JSON.parse(r.result);if(!Array.isArray(o.docs)||!Array.isArray(o.terms))throw 0;if(confirm('現在のデータをバックアップ内容で置き換えますか？')){set(D,o.docs);set(T,o.terms);migrate();refresh();alert('復元しました')}}catch{alert('読み込めないファイルです')}};r.readAsText(f)}
+const D='rn_docs',T='rn_terms';let q=[],n=0;
+const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),uid=()=>Date.now()+Math.random();
+function migrate(){let a=get(D),c=false;a.forEach(x=>{if(!x.id){x.id=uid();c=true}});if(c)set(D,a)}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');if(p==='library')renderDocs();if(p==='terms')renderTerms();refresh();scrollTo(0,0)}
+function saveDoc(){if(!title.value.trim())return alert('タイトルを入力');let a=get(D);a.unshift({id:uid(),title:title.value,category:category.value,tags:tags.value.split(',').filter(Boolean),memo:memo.value});set(D,a);title.value=tags.value=memo.value='';go('library')}
+function renderDocs(){let s=(search.value||'').toLowerCase(),a=get(D).filter(x=>(x.title+' '+x.category+' '+(x.tags||[]).join(' ')+' '+(x.memo||'')).toLowerCase().includes(s));docs.innerHTML=a.length?a.map(x=>`<div class="item" onclick="openDoc('${x.id}')"><b>${x.title}</b><br><span class="tag">${x.category}</span><p>${x.memo||''}</p><small class="muted">タップで詳細 ›</small></div>`).join(''):'まだ資料がありません'}
+function openDoc(i){let x=get(D).find(v=>String(v.id)===String(i));if(!x)return;detailCard.innerHTML=`<h2>${x.title}</h2><span class="tag">${x.category}</span><p>${x.memo||'メモなし'}</p><button onclick="reviewOne('${x.id}')">この資料を復習</button> <button class="alt" onclick="go('library')">戻る</button>`;go('detail')}
+function saveTerm(){if(!term.value.trim())return;let a=get(T);a.unshift({id:uid(),name:term.value,full:full.value,note:termnote.value});set(T,a);term.value=full.value=termnote.value='';renderTerms();refresh()}
+function renderTerms(){let a=get(T);termList.innerHTML=a.length?a.map(x=>`<div class="item"><b>${x.name}</b><div>${x.full||''}</div><p>${x.note||''}</p></div>`).join(''):'まだ用語がありません'}
+function items(){return [...get(D).map(x=>({id:x.id,label:x.title})),...get(T).map(x=>({id:x.id,label:x.name}))]}
+function startReview(){q=items();n=0;showReview()}
+function reviewOne(i){let x=get(D).find(v=>String(v.id)===String(i));q=x?[{id:x.id,label:x.title}]:[];n=0;showReview()}
+function showReview(){if(!q.length){reviewCard.innerHTML='<p>まず資料か用語を登録しよう。</p>';go('review');return}if(n>=q.length){reviewCard.innerHTML='<h2>今日の復習は完了！</h2><button onclick="go(\'home\')">ホームへ</button>';go('review');return}let x=q[n];reviewCard.innerHTML=`<div class="muted">${n+1} / ${q.length}</div><h2>${x.label}</h2><p>自分の言葉で説明してみよう。</p><button onclick="n++;showReview()">次を見る</button> <button class="alt" onclick="go('home')">終了</button>`;go('review')}
+function refresh(){due.textContent=items().length}
+function exportData(){let b=new Blob([JSON.stringify({docs:get(D),terms:get(T)},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='refine-note-backup.json';a.click()}
 migrate();renderDocs();renderTerms();refresh();
 </script></body></html>
